@@ -7,71 +7,441 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap">
   <style>
     :root {
-      --bg: #F3F5F9; --sf: #fff; --ink: #0B1F3F; --mu: #5B6B85; --ln: #D8DFEA; --ac: #1F4E9C;
-      --acs: #E4ECF8; --ok: #1E7B4B; --wa: #9A6700; --bd: #C0392B; --hd: #0B1F3F; color-scheme: light;
-      box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+      --bg: #f3f6fb;
+      --sf: #ffffff;
+      --ink: #12233f;
+      --mu: #5d6d84;
+      --ln: #dfe7f3;
+      --ac: #1d4f9c;
+      --ac-2: #2e6fe4;
+      --acs: #eaf1ff;
+      --ok: #1c8a5a;
+      --wa: #b7791f;
+      --bd: #d74f3a;
+      --hd: #102a4d;
+      --shadow: 0 12px 30px rgba(18, 35, 63, 0.12);
+      color-scheme: light;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
     }
+
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme="light"]) {
-        --bg: #08142B; --sf: #0F2142; --ink: #E8EEF8; --mu: #9AA9C4; --ln: #1E345E; --ac: #6B9AE8; --acs: #16305C; --ok: #5FC48D; --wa: #E8B550; --bd: #F07A6B; --hd: #0F2142; color-scheme: dark;
+        --bg: #09182d;
+        --sf: #102542;
+        --ink: #edf4ff;
+        --mu: #a0afd0;
+        --ln: #1d365f;
+        --ac: #6da4ff;
+        --ac-2: #8fc0ff;
+        --acs: #102f5e;
+        --ok: #5cd4a0;
+        --wa: #e3b758;
+        --bd: #ff8c76;
+        --hd: #0f2140;
+        --shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+        color-scheme: dark;
       }
     }
-    :root[data-theme="dark"] { --bg: #08142B; --sf: #0F2142; --ink: #E8EEF8; --mu: #9AA9C4; --ln: #1E345E; --ac: #6B9AE8; --acs: #16305C; --ok: #5FC48D; --wa: #E8B550; --bd: #F07A6B; --hd: #0F2142; color-scheme: dark; }
+
+    :root[data-theme="dark"] {
+      --bg: #09182d;
+      --sf: #102542;
+      --ink: #edf4ff;
+      --mu: #a0afd0;
+      --ln: #1d365f;
+      --ac: #6da4ff;
+      --ac-2: #8fc0ff;
+      --acs: #102f5e;
+      --ok: #5cd4a0;
+      --wa: #e3b758;
+      --bd: #ff8c76;
+      --hd: #0f2140;
+      --shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+      color-scheme: dark;
+    }
+
     html { scroll-padding-top: env(safe-area-inset-top, 0px); }
     * { box-sizing: border-box; }
-    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.4 Barlow, system-ui, sans-serif; padding-bottom: 150px; }
-    body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); background: var(--hd); z-index: 10; }
-    header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--hd); color: #fff; display: flex; align-items: center; gap: 12px; padding: 10px 16px; }
-    header .lg { background: #fff; border-radius: 10px; padding: 5px 7px; display: flex; }
+
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, var(--bg) 0%, #eef3fb 100%);
+      color: var(--ink);
+      font: 16px/1.45 Barlow, system-ui, sans-serif;
+      padding-bottom: 150px;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0 0 auto;
+      height: env(safe-area-inset-top, 0px);
+      background: var(--hd);
+      z-index: 10;
+    }
+
+    header {
+      position: sticky;
+      top: env(safe-area-inset-top, 0px);
+      z-index: 9;
+      background: linear-gradient(135deg, var(--hd) 0%, #173e74 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      box-shadow: 0 10px 20px rgba(16, 42, 77, 0.18);
+    }
+
+    header .lg {
+      background: rgba(255,255,255,0.96);
+      border-radius: 12px;
+      padding: 6px 8px;
+      display: flex;
+      box-shadow: inset 0 0 0 1px rgba(18, 35, 63, 0.08);
+    }
+
     header img { height: 34px; display: block; }
-    header b { font-size: 19px; font-weight: 700; letter-spacing: .2px; display: block; line-height: 1.1; }
-    header small { opacity: .75; font-size: 13px; }
-    main { max-width: 640px; margin: 0 auto; padding: 14px 14px 0; }
-    h3 { font-size: 15px; margin: 18px 2px 8px; color: var(--mu); font-weight: 600; }
-    .chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
-    .chip { flex: none; border: 1px solid var(--ln); background: var(--sf); color: var(--ink); border-radius: 20px; padding: 7px 14px; font: inherit; font-size: 14px; }
-    .chip.on { background: var(--ac); border-color: var(--ac); color: #fff; font-weight: 600; }
-    .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--sf); border: 1px solid var(--ln); border-radius: 10px; padding: 11px 13px; margin-bottom: 7px; }
-    .row .n { font-weight: 600; }
-    .row .s { font-size: 13px; color: var(--mu); }
+    header b {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      display: block;
+      line-height: 1.1;
+    }
+    header small { opacity: .8; font-size: 13px; }
+
+    main {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 18px 16px 0;
+    }
+
+    h3 {
+      font-size: 15px;
+      margin: 18px 2px 8px;
+      color: var(--mu);
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    .chip {
+      flex: none;
+      border: 1px solid var(--ln);
+      background: var(--sf);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 14px;
+      min-height: 38px;
+      box-shadow: 0 2px 8px rgba(18, 35, 63, 0.04);
+    }
+
+    .chip.on {
+      background: linear-gradient(135deg, var(--ac) 0%, var(--ac-2) 100%);
+      border-color: var(--ac);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(180deg, var(--sf) 0%, rgba(255,255,255,0.9) 100%);
+      border: 1px solid var(--ln);
+      border-radius: 14px;
+      padding: 12px 13px;
+      margin-bottom: 8px;
+      box-shadow: 0 6px 14px rgba(17, 36, 64, 0.04);
+    }
+
+    .row .n {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .row .s {
+      font-size: 13px;
+      color: var(--mu);
+      margin-top: 2px;
+    }
+
     .row .r { text-align: right; white-space: nowrap; }
-    .row .q { font-size: 20px; font-weight: 700; }
-    .bg { font-size: 12px; font-weight: 600; border-radius: 6px; padding: 2px 8px; display: inline-block; }
+    .row .q { font-size: 20px; font-weight: 800; }
+
+    .bg {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 4px 9px;
+      display: inline-block;
+      letter-spacing: .02em;
+    }
+
     .Aman { color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
     .Menipis { color: var(--wa); background: color-mix(in srgb, var(--wa) 16%, transparent); }
     .Habis, .Minus { color: var(--bd); background: color-mix(in srgb, var(--bd) 14%, transparent); }
     .in { color: var(--ok); }
     .out { color: var(--bd); }
-    .alert { background: color-mix(in srgb, var(--wa) 14%, transparent); border-radius: 10px; padding: 10px 13px; margin: 10px 0 4px; font-size: 14px; }
-    .empty { text-align: center; color: var(--mu); padding: 40px 10px; }
-    .empty b { display: block; color: var(--ink); font-size: 18px; margin-bottom: 4px; }
-    .card { background: var(--sf); border: 1px solid var(--ln); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
-    .card h2 { font-size: 17px; margin: 0 0 6px; }
-    .card p { margin: 0 0 10px; color: var(--mu); font-size: 14px; }
-    .b { font: inherit; font-weight: 600; border: 1px solid var(--ln); background: var(--sf); color: var(--ink); border-radius: 10px; padding: 10px 16px; cursor: pointer; }
-    .b.pri { background: var(--ac); border-color: var(--ac); color: #fff; }
-    .b.dang { color: var(--bd); border-color: var(--bd); }
-    .acts { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 12px; }
-    label { display: block; font-size: 14px; font-weight: 500; color: var(--mu); margin-top: 10px; }
-    input, select { display: block; width: 100%; margin-top: 4px; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--ln); border-radius: 9px; padding: 10px 11px; }
-    input:focus-visible, select:focus-visible, .b:focus-visible, .chip:focus-visible, nav button:focus-visible { outline: 2px solid var(--ac); outline-offset: 2px; }
+
+    .alert {
+      background: color-mix(in srgb, var(--wa) 14%, transparent);
+      border: 1px solid color-mix(in srgb, var(--wa) 30%, transparent);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin: 10px 0 12px;
+      font-size: 14px;
+      color: var(--ink);
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--mu);
+      padding: 36px 10px 22px;
+    }
+
+    .empty b {
+      display: block;
+      color: var(--ink);
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--sf) 0%, rgba(255,255,255,0.96) 100%);
+      border: 1px solid var(--ln);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+      font-size: 17px;
+      margin: 0 0 8px;
+      color: var(--ink);
+    }
+
+    .card p {
+      margin: 0 0 10px;
+      color: var(--mu);
+      font-size: 14px;
+    }
+
+    .b {
+      font: inherit;
+      font-weight: 700;
+      border: 1px solid var(--ln);
+      background: var(--sf);
+      color: var(--ink);
+      border-radius: 11px;
+      padding: 10px 16px;
+      cursor: pointer;
+      min-height: 42px;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .b:hover { transform: translateY(-1px); }
+    .b.pri {
+      background: linear-gradient(135deg, var(--ac) 0%, var(--ac-2) 100%);
+      border-color: var(--ac);
+      color: #fff;
+      box-shadow: 0 12px 18px rgba(29, 79, 156, 0.18);
+    }
+
+    .b.dang {
+      color: var(--bd);
+      border-color: color-mix(in srgb, var(--bd) 36%, transparent);
+    }
+
+    .acts {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--mu);
+      margin-top: 10px;
+    }
+
+    input, select {
+      display: block;
+      width: 100%;
+      margin-top: 6px;
+      font: inherit;
+      color: var(--ink);
+      background: rgba(243, 246, 251, 0.9);
+      border: 1px solid var(--ln);
+      border-radius: 11px;
+      padding: 11px 12px;
+      min-height: 42px;
+    }
+
+    input:focus-visible, select:focus-visible, .b:focus-visible, .chip:focus-visible, nav button:focus-visible {
+      outline: 2px solid var(--ac);
+      outline-offset: 2px;
+    }
+
     .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .fab { position: fixed; right: 16px; bottom: calc(70px + env(safe-area-inset-bottom, 0px)); z-index: 8; border: 0; background: var(--ac); color: #fff; font: inherit; font-weight: 700; border-radius: 28px; padding: 14px 20px; box-shadow: 0 10px 20px rgba(31, 78, 156, .26); }
-    nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 8; background: var(--sf); border-top: 1px solid var(--ln); display: flex; padding-bottom: env(safe-area-inset-bottom, 0px); }
-    nav button { flex: 1; border: 0; background: none; color: var(--mu); font: inherit; font-size: 13px; padding: 14px 2px; }
-    nav button.on { color: var(--ac); font-weight: 700; box-shadow: inset 0 3px 0 var(--ac); }
-    .ov { position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,.5); display: flex; align-items: flex-end; justify-content: center; }
-    .sheet { background: var(--sf); width: 100%; max-width: 520px; max-height: 92vh; overflow: auto; border-radius: 16px 16px 0 0; padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px)); }
-    .sheet h2 { margin: 0 0 2px; font-size: 19px; }
+
+    .fab {
+      position: fixed;
+      right: 16px;
+      bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+      z-index: 8;
+      border: 0;
+      background: linear-gradient(135deg, var(--ac) 0%, var(--ac-2) 100%);
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
+      border-radius: 28px;
+      padding: 15px 20px;
+      box-shadow: 0 14px 24px rgba(29, 79, 156, 0.22);
+    }
+
+    nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 8;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--ln);
+      display: flex;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      box-shadow: 0 -8px 16px rgba(18,35,63,0.06);
+    }
+
+    nav button {
+      flex: 1;
+      border: 0;
+      background: none;
+      color: var(--mu);
+      font: inherit;
+      font-size: 13px;
+      padding: 14px 2px;
+    }
+
+    nav button.on {
+      color: var(--ac);
+      font-weight: 800;
+      box-shadow: inset 0 3px 0 var(--ac);
+    }
+
+    .ov {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      background: rgba(9, 17, 28, 0.5);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .sheet {
+      background: var(--sf);
+      width: 100%;
+      max-width: 520px;
+      max-height: 92vh;
+      overflow: auto;
+      border-radius: 18px 18px 0 0;
+      padding: 18px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+      box-shadow: 0 -10px 30px rgba(18,35,63,0.15);
+    }
+
+    .sheet h2 {
+      margin: 0 0 2px;
+      font-size: 20px;
+    }
+
     .err { color: var(--bd); font-size: 14px; margin: 8px 0 0; min-height: 1px; }
-    .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(130px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px; display: none; z-index: 25; }
-    .dashboard-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-    .metric { background: var(--bg); border: 1px solid var(--ln); border-radius: 12px; padding: 12px; }
-    .metric .label { display: block; font-size: 12px; color: var(--mu); margin: 0 0 8px; }
-    .metric .value { display: block; font-size: 28px; font-weight: 700; line-height: 1.1; }
-    .metric .sub { display: block; font-size: 12px; color: var(--mu); margin-top: 6px; }
-    .search-box { margin: 0 0 10px; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(130px + env(safe-area-inset-bottom, 0px));
+      background: rgba(18,35,63,0.96);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      display: none;
+      z-index: 25;
+      box-shadow: 0 12px 24px rgba(18,35,63,0.18);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      background: linear-gradient(180deg, rgba(234, 241, 255, 0.8), rgba(255, 255, 255, 0.96));
+      border: 1px solid var(--ln);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .metric .label {
+      display: block;
+      font-size: 12px;
+      color: var(--mu);
+      margin: 0 0 8px;
+      font-weight: 600;
+    }
+
+    .metric .value {
+      display: block;
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .metric .sub {
+      display: block;
+      font-size: 12px;
+      color: var(--mu);
+      margin-top: 6px;
+    }
+
+    .search-box { margin: 0 0 12px; }
     .search-box input { margin-top: 0; }
+
+    .report-panel {
+      background: linear-gradient(135deg, rgba(234, 241, 255, 0.7), rgba(255,255,255,1));
+      border: 1px solid var(--ln);
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+
+    .report-panel h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+    }
+
     @media (prefers-reduced-motion: no-preference) {
       .sheet { animation: up .18s ease-out; }
       @keyframes up { from { transform: translateY(24px); opacity: .6; } }
@@ -108,6 +478,7 @@
     let pend = null;
     let rep = { t: 'stok', c: 0, f: '', to: '' };
     let search = '';
+    let pdfLibReady = false;
 
     const $ = (selector) => document.querySelector(selector);
     const esc = (value) => String(value == null ? '' : value).replace(/[&<>\"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] || char));
@@ -302,7 +673,16 @@
 
       html += `<div class="card"><h2>Backup & impor</h2><p>Impor file hasil backup untuk memulihkan data lama.</p><label style="margin-top:0">File backup<input type="file" accept="application/json" onchange="pick(event)"></label></div>`;
 
-      html += `<div class="card"><h2>Laporan PDF</h2><p>Laporan memakai KOP CV. Satu Atap Karya. Di HP akan muncul menu bagikan (WhatsApp dan lainnya). Di komputer file langsung diunduh.</p><label>Jenis laporan<select onchange="rep.t=this.value"><option value="stok"${rep.t === 'stok' ? ' selected' : ''}>Stok barang</option><option value="masuk"${rep.t === 'masuk' ? ' selected' : ''}>Barang masuk</option><option value="keluar"${rep.t === 'keluar' ? ' selected' : ''}>Barang keluar</option></select></label><label>Kategori<select onchange="rep.c=+this.value">${SH.map((label, index) => `<option value="${index}"${rep.c === index ? ' selected' : ''}>${label}</option>`).join('')}</select></label><div class="two"><label>Dari tanggal<input type="date" value="${rep.f}" onchange="rep.f=this.value"></label><label>Sampai tanggal<input type="date" value="${rep.to}" onchange="rep.to=this.value"></label></div><p style="margin-top:8px">Tanggal berlaku untuk laporan masuk dan keluar. Kosongkan untuk semua tanggal.</p><div class="acts" style="justify-content:flex-start"><button class="b pri" onclick="pdf()">Buat PDF</button></div></div>`;
+      html += `
+        <div class="report-panel">
+          <h3>Ekspor laporan PDF</h3>
+          <label>Jenis laporan<select onchange="rep.t=this.value"><option value="stok"${rep.t === 'stok' ? ' selected' : ''}>Stok barang</option><option value="masuk"${rep.t === 'masuk' ? ' selected' : ''}>Barang masuk</option><option value="keluar"${rep.t === 'keluar' ? ' selected' : ''}>Barang keluar</option></select></label>
+          <label>Kategori<select onchange="rep.c=+this.value">${SH.map((label, index) => `<option value="${index}"${rep.c === index ? ' selected' : ''}>${label}</option>`).join('')}</select></label>
+          <div class="two"><label>Dari tanggal<input type="date" value="${rep.f}" onchange="rep.f=this.value"></label><label>Sampai tanggal<input type="date" value="${rep.to}" onchange="rep.to=this.value"></label></div>
+          <p style="margin-top:8px">Tanggal berlaku untuk laporan masuk dan keluar. Kosongkan untuk semua tanggal.</p>
+          <div class="acts" style="justify-content:flex-start"><button class="b pri" onclick="pdf()">Buat PDF</button></div>
+        </div>
+      `;
       return html;
     }
 
@@ -432,7 +812,7 @@
         { k: 'ket', l: 'Keterangan', t: 'text' }
       ];
 
-      openForm((id ? 'Ubah ' : 'Catat ') + (isIn ? 'barang masuk' : 'barang keluar'), fields, tx, (v, forceFlag) => {
+      openForm((id ? 'Ubah ' : 'Catat ') + (isIn ? 'barang masuk' : 'barang keluar'), fields, tx, (v) => {
         v.qty = Number(v.qty) || 0;
         if (!v.tgl || !(v.qty > 0)) return { err: 'Tanggal dan jumlah (lebih dari 0) wajib diisi.' };
 
@@ -454,8 +834,47 @@
       } : null);
     }
 
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[src="${src}"]`);
+        if (existing) {
+          existing.addEventListener('load', resolve, { once: true });
+          if (existing.dataset.loaded === 'true') resolve();
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        script.onload = () => {
+          script.dataset.loaded = 'true';
+          resolve();
+        };
+        script.onerror = () => reject(new Error(`Gagal memuat: ${src}`));
+        document.head.appendChild(script);
+      });
+    }
+
+    async function ensurePdfLib() {
+      if (window.jspdf && typeof window.jspdf.jsPDF === 'function') {
+        pdfLibReady = true;
+        return true;
+      }
+
+      if (pdfLibReady) return true;
+
+      try {
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js');
+        pdfLibReady = !!(window.jspdf && typeof window.jspdf.jsPDF === 'function');
+        return pdfLibReady;
+      } catch (error) {
+        return false;
+      }
+    }
+
     async function saveFile(name, data, type) {
-      const blob = new Blob([data], { type });
+      const blob = data instanceof Blob ? data : new Blob([data], { type });
       const file = new File([blob], name, { type });
 
       if (navigator.canShare && matchMedia('(pointer:coarse)').matches && navigator.canShare({ files: [file] })) {
@@ -528,8 +947,9 @@
     }
 
     async function pdf() {
-      if (!window.jspdf) {
-        toast('PDF belum siap. Periksa koneksi internet lalu coba lagi.');
+      const ready = await ensurePdfLib();
+      if (!ready) {
+        toast('Library PDF gagal dimuat. Periksa koneksi internet lalu coba lagi.');
         return;
       }
 
@@ -537,7 +957,7 @@
       const t = rep.t;
       const k = rep.c;
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
       const W = doc.internal.pageSize.getWidth();
       const H = doc.internal.pageSize.getHeight();
       let head = [];
@@ -636,6 +1056,11 @@
       const periodText = t === 'stok' ? 'Per tanggal ' + dm(today()) : 'Periode: ' + (rep.f || rep.to ? dm(rep.f || '') + ' s/d ' + dm(rep.to || today()) : 'Semua tanggal');
       doc.text('Kategori: ' + SH[k] + '   |   ' + periodText, W / 2, 44, { align: 'center' });
 
+      if (typeof doc.autoTable !== 'function') {
+        toast('Plugin PDF tidak kompatibel. Silakan muat ulang halaman.');
+        return;
+      }
+
       doc.autoTable({
         startY: 49,
         head,
@@ -653,7 +1078,8 @@
       });
 
       try {
-        const result = await saveFile('laporan-' + t + '-' + today() + '.pdf', doc.output('arraybuffer'), 'application/pdf');
+        const buffer = doc.output('arraybuffer');
+        const result = await saveFile('laporan-' + t + '-' + today() + '.pdf', buffer, 'application/pdf');
         if (result === 'ok') toast('PDF siap');
       } catch (error) {
         toast('PDF gagal dibuat');
