@@ -65,6 +65,13 @@
     .sheet h2 { margin: 0 0 2px; font-size: 19px; }
     .err { color: var(--bd); font-size: 14px; margin: 8px 0 0; min-height: 1px; }
     .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(130px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px; display: none; z-index: 25; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .metric { background: var(--bg); border: 1px solid var(--ln); border-radius: 12px; padding: 12px; }
+    .metric .label { display: block; font-size: 12px; color: var(--mu); margin: 0 0 8px; }
+    .metric .value { display: block; font-size: 28px; font-weight: 700; line-height: 1.1; }
+    .metric .sub { display: block; font-size: 12px; color: var(--mu); margin-top: 6px; }
+    .search-box { margin: 0 0 10px; }
+    .search-box input { margin-top: 0; }
     @media (prefers-reduced-motion: no-preference) {
       .sheet { animation: up .18s ease-out; }
       @keyframes up { from { transform: translateY(24px); opacity: .6; } }
@@ -100,6 +107,7 @@
     let cat = 0;
     let pend = null;
     let rep = { t: 'stok', c: 0, f: '', to: '' };
+    let search = '';
 
     const $ = (selector) => document.querySelector(selector);
     const esc = (value) => String(value == null ? '' : value).replace(/[&<>\"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char] || char));
@@ -111,6 +119,7 @@
     };
     const dm = (value) => (value ? value.split('-').reverse().join('/') : '');
     const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const normalizeText = (value) => String(value ?? '').trim().toLowerCase();
 
     function loadState() {
       try {
@@ -175,7 +184,25 @@
       return map;
     }
 
+    function getVisibleItems() {
+      const needle = normalizeText(search);
+      if (!needle) return S.items.slice();
+      return S.items.filter((item) => {
+        const haystack = [item.kode, item.nama, item.kat, item.satuan, item.id].join(' ');
+        return normalizeText(haystack).includes(needle);
+      });
+    }
+
     const inCat = (item) => !cat || (item && item.kat === KATS[cat - 1]);
+
+    function searchBar() {
+      return `
+        <div class="card search-box">
+          <label style="margin:0 0 6px; display:block;">Pencarian cepat</label>
+          <input type="search" value="${esc(search)}" placeholder="Cari kode, nama, kategori, satuan..." oninput="search=this.value;render()">
+        </div>
+      `;
+    }
 
     function chips() {
       return `<div class="chips">${SH.map((label, index) => `<button class="chip${index === cat ? ' on' : ''}" onclick="cat=${index};render()">${label}</button>`).join('')}</div>`;
@@ -197,32 +224,61 @@
       return html;
     }
 
+    function dashboard() {
+      const C = calc();
+      const items = S.items.map((item) => C[item.id] || { i: item, in: 0, out: 0 });
+      const totalBarang = items.length;
+      const aman = items.filter((row) => row.st === 'Aman').length;
+      const alerting = items.filter((row) => row.st !== 'Aman').length;
+      const habis = items.filter((row) => row.st === 'Habis' || row.st === 'Minus').length;
+      const pembelian = S.masuk.reduce((sum, entry) => sum + ((Number(entry.qty) || 0) * (Number(entry.harga) || 0)), 0);
+      const totalKeluar = S.keluar.reduce((sum, entry) => sum + (Number(entry.qty) || 0), 0);
+
+      return `
+        <div class="card">
+          <h2>Dashboard</h2>
+          <div class="search-box">
+            <input type="search" value="${esc(search)}" placeholder="Cari kode / nama / kategori..." oninput="search=this.value;render()">
+          </div>
+          <div class="dashboard-grid">
+            <div class="metric"><span class="label">Total barang</span><span class="value">${num(totalBarang)}</span><span class="sub">Seluruh item aktif</span></div>
+            <div class="metric"><span class="label">Stok aman</span><span class="value">${num(aman)}</span><span class="sub">Belum perlu perhatian</span></div>
+            <div class="metric"><span class="label">Perlu dicek</span><span class="value">${num(alerting)}</span><span class="sub">Menipis / habis / minus</span></div>
+            <div class="metric"><span class="label">Habis / minus</span><span class="value">${num(habis)}</span><span class="sub">Butuh tindakan cepat</span></div>
+            <div class="metric" style="grid-column:1 / -1;"><span class="label">Pembelian total</span><span class="value">${rp(pembelian)}</span><span class="sub">${num(S.masuk.length)} transaksi masuk</span></div>
+            <div class="metric" style="grid-column:1 / -1;"><span class="label">Barang keluar</span><span class="value">${num(totalKeluar)}</span><span class="sub">${num(S.keluar.length)} transaksi keluar</span></div>
+          </div>
+        </div>
+      `;
+    }
+
     function render() {
       const C = calc();
       let html = '';
 
       if (tab === 'stok' || tab === 'barang') {
-        const rows = S.items.map((item) => C[item.id] || { i: item, in: 0, out: 0 });
+        const visibleItems = getVisibleItems();
+        const rows = visibleItems.map((item) => C[item.id] || { i: item, in: 0, out: 0 });
         const low = rows.filter((row) => inCat(row.i) && row.st !== 'Aman').length;
 
-        html = chips() + (tab === 'stok' && low ? `<p class="alert">${low} barang perlu dicek: stok menipis, habis, atau minus.</p>` : '') +
-          (S.items.length ? groups(rows, (row) => tab === 'stok' ?
+        html = searchBar() + chips() + (tab === 'stok' && low ? `<p class="alert">${low} barang perlu dicek: stok menipis, habis, atau minus.</p>` : '') +
+          (visibleItems.length ? groups(rows, (row) => tab === 'stok' ?
             `<div class="row" onclick="itemForm('${row.i.id}')"><div><div class="n">${esc(row.i.nama)}</div><div class="s">${esc(row.i.kode)} | masuk ${num(row.in)} | keluar ${num(row.out)}</div></div><div class="r"><div class="q ${row.st}">${num(row.s)}</div><span class="bg ${row.st}">${row.st}</span></div></div>` :
             `<div class="row" onclick="itemForm('${row.i.id}')"><div><div class="n">${esc(row.i.nama)}</div><div class="s">${esc(row.i.kode)} | ${esc(row.i.satuan)} | stok awal ${num(row.i.awal)} | minimum ${num(row.i.min)}</div></div><div class="r"><div class="q">${num(row.s)}</div><span class="bg ${row.st}">${row.st}</span></div></div>`) :
-            empty('Tidak ada barang di kategori ini', 'Pilih kategori lain atau tambah barang.'));
+            empty(search ? 'Tidak ada barang cocok pencarian' : 'Tidak ada barang di kategori ini', search ? 'Coba kata kunci lain atau ubah filter kategori.' : 'Pilih kategori lain atau tambah barang.'));
 
         if (!S.items.length) {
-          html = chips() + empty('Belum ada barang', 'Mulai dengan tombol “+ Barang”, lalu catat barang masuk dan keluar.');
+          html = searchBar() + chips() + empty('Belum ada barang', 'Mulai dengan tombol “+ Barang”, lalu catat barang masuk dan keluar.');
         }
       } else if (tab === 'masuk' || tab === 'keluar') {
         const list = S[tab].filter((entry) => C[entry.bid] && inCat(C[entry.bid].i)).sort((a, b) => `${b.tgl}${b.id}`.localeCompare(`${a.tgl}${a.id}`));
-        html = chips() + (list.length ? list.map((entry) => {
+        html = searchBar() + chips() + (list.length ? list.map((entry) => {
           const row = C[entry.bid];
           const meta = `${dm(entry.tgl)}${entry.no ? ' | ' + esc(entry.no) : ''}${entry.sup ? ' | ' + esc(entry.sup) : ''}${entry.tujuan ? ' | ' + esc(entry.tujuan) : ''}`;
           return `<div class="row" onclick="txForm('${tab}','${entry.id}')"><div><div class="n">${esc(row.i.nama)}</div><div class="s">${meta}</div></div><div class="r"><div class="q ${tab === 'masuk' ? 'in' : 'out'}">${tab === 'masuk' ? '+' : '-'}${num(entry.qty)}</div><span class="bg ${tab === 'masuk' ? 'in' : 'out'}">${tab === 'masuk' ? 'Masuk' : 'Keluar'}</span></div></div>`;
         }).join('') : empty('Belum ada transaksi', 'Catat barang masuk atau keluar untuk mulai.'));
       } else {
-        html = lain();
+        html = dashboard() + lain();
       }
 
       $('#v').innerHTML = html;
